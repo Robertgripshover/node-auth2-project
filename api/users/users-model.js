@@ -1,7 +1,10 @@
 const db = require('../../data/db-config.js');
 
+
+
 function find() {
-  /**
+
+    /**
     You will need to join two tables.
     Resolves to an ARRAY with all users.
 
@@ -18,6 +21,23 @@ function find() {
       }
     ]
    */
+
+
+//raw SQLlite
+    /* 
+  select
+    user_id,
+    username,
+    role_name,
+  from users
+    join roles on 
+  users.role_id = roles.role_id;
+   */ 
+
+    return db('users') //<< this is the left table
+      .join('roles', 'users.role_id', 'roles.role_id')
+      .select('user_id', 'username', 'role_name')
+
 }
 
 function findBy(filter) {
@@ -34,6 +54,24 @@ function findBy(filter) {
       }
     ]
    */
+
+    //raw SQllite
+    /*
+      select
+    user_id,
+    username,
+    password,
+    role_name,
+  from users
+    join roles on 
+  users.role_id = roles.role_id
+  where users.user_id = 1;
+    */
+
+  return db('users') //<< this is the left table
+  .join('roles', 'users.role_id', 'roles.role_id')
+  .select('user_id', 'username', 'password', 'role_name') //<< the order of these does not really matter
+  .where(filter) //<< this takes in the filter which will be dynamically updated to which user_id that is passed in thorugh the function
 }
 
 function findById(user_id) {
@@ -47,6 +85,11 @@ function findById(user_id) {
       "role_name": "instructor"
     }
    */
+
+    return db('users') //<< this is the left table
+    .join('roles', 'users.role_id', 'roles.role_id')
+    .select('user_id', 'username', 'password', 'role_name') //<< the order of these does not really matter
+    .where('users.user_id', user_id).first() //<< this takes in the filter which will be dynamically updated to which user_id that is passed in thorugh the function
 }
 
 /**

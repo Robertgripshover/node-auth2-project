@@ -16,6 +16,7 @@ const restricted = (req, res, next) => {
 
     Put the decoded token in the req object, to make life easier for middlewares downstream!
   */
+    next()
 }
 
 const only = role_name => (req, res, next) => {
@@ -29,6 +30,7 @@ const only = role_name => (req, res, next) => {
 
     Pull the decoded token from the req object, to avoid verifying it again!
   */
+ next()
 }
 
 
@@ -40,6 +42,7 @@ const checkUsernameExists = (req, res, next) => {
       "message": "Invalid credentials"
     }
   */
+    next()
 }
 
 
@@ -62,6 +65,18 @@ const validateRoleName = (req, res, next) => {
       "message": "Role name can not be longer than 32 chars"
     }
   */
+    if (!req.body.role_name || !req.body.role_name.trim()) { //if both of these are falsy then...
+      req.role_name = 'student'
+      next()
+    } //<< this is just saying if no role is specified then make it a 'student' role
+    else if (req.body.role_name.trim() === 'admin') {
+      next({ status: 422, message: 'Role name cannot be admin' }) //this is because you can't just create a role of 'admin'
+    }
+    else if (req.body.role_name.trim().length > 32) {
+      next({ status: 422, message: 'Role name can not be longer than 32 chars' }) //
+    } else {
+      next() //so if all of these things pass, next() will just be called and this middleware has done its job
+    }
 }
 
 module.exports = {

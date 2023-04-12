@@ -18,6 +18,7 @@ You will complete the following tasks and do any extra wiring and package instal
 `//NOTE: don't forget to make a .env file that sets up the enviorment. and `
 `//don't forget to install npm i dotenv`
 `npm i jsonwebtoken`
+`npm i -g fkill-cli` << this is just for killing a 'listening on port' processes
 
 #### 2A - Database Access Functions
 
