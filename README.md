@@ -14,6 +14,11 @@ Your assignment page on Canvas should contain instructions for submitting this p
 
 You will complete the following tasks and do any extra wiring and package installation necessary for the app to compile and pass all tests.
 
+
+`//NOTE: don't forget to make a .env file that sets up the enviorment. and `
+`//don't forget to install npm i dotenv`
+`npm i jsonwebtoken`
+
 #### 2A - Database Access Functions
 
 Write the following user access functions inside `api/users/users-model.js`:
