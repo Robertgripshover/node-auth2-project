@@ -1,6 +1,9 @@
 const router = require("express").Router();
 const { checkUsernameExists, validateRoleName } = require('./auth-middleware');
 const { JWT_SECRET } = require("../secrets"); // use this secret!
+const bcrypt = require('bcryptjs')
+const User = require('../users/users-model')
+
 
 router.post("/register", validateRoleName, (req, res, next) => {
   /**
@@ -14,6 +17,19 @@ router.post("/register", validateRoleName, (req, res, next) => {
       "role_name": "angel"
     }
    */
+
+    const { username, password } = req.body
+    const { role_name } = req
+    const hash = bcrypt.hashSync(password, 8)
+    User.add({ username, password: hash, role_name }) //<< must make sure the password is hashed like this
+      .then(newlyCreatedUser => {
+        res.status(201).json({
+          user_id: newlyCreatedUser.user_id,
+          username: newlyCreatedUser.username,
+          role_name: newlyCreatedUser.role_name,
+        }) // this was sending back the bcrypted password also, this little bit of synctax is just making it so only these things come back
+      })
+      .catch(next) 
 });
 
 

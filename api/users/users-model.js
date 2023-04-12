@@ -125,7 +125,7 @@ async function add({ username, password, role_name }) { // done for you
     created_user_id = user_id
   })
   return findById(created_user_id)
-}
+} //this 'transaction' function is handling the user adding bad data into the database, it makes sure that that can't happen
 
 module.exports = {
   add,
