@@ -2,6 +2,7 @@ const router = require("express").Router();
 const { checkUsernameExists, validateRoleName } = require('./auth-middleware');
 const { JWT_SECRET } = require("../secrets"); // use this secret!
 const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
 const User = require('../users/users-model')
 
 
@@ -23,11 +24,7 @@ router.post("/register", validateRoleName, (req, res, next) => {
     const hash = bcrypt.hashSync(password, 8)
     User.add({ username, password: hash, role_name }) //<< must make sure the password is hashed like this
       .then(newlyCreatedUser => {
-        res.status(201).json({
-          user_id: newlyCreatedUser.user_id,
-          username: newlyCreatedUser.username,
-          role_name: newlyCreatedUser.role_name,
-        }) // this was sending back the bcrypted password also, this little bit of synctax is just making it so only these things come back
+        res.status(201).json(newlyCreatedUser)
       })
       .catch(next) 
 });
@@ -53,6 +50,29 @@ router.post("/login", checkUsernameExists, (req, res, next) => {
       "role_name": "admin" // the role of the authenticated user
     }
    */
+  if (bcrypt.compareSync(req.body.password, req.user.password)) {
+    
+  } else {
+    next({ status: 401, message: "Invalid credentials" })
+  }
 });
+
+
+
+//this VVV is a whole buildToken function
+function buildToken(user) {
+  const payload = {
+    subject: user.user_id,
+    role_name: user.role_name,
+    username: user.username,
+  }
+  const options = {
+    expiresIn: '1d',
+  } 
+  return jwt.sign(payload, JWT_SECRET, options)
+}
+
+
+
 
 module.exports = router;
