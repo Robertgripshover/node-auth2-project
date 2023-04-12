@@ -27,9 +27,9 @@ const restricted = (req, res, next) => {
     }
     jwt.verify(token, JWT_SECRET, (err, decodedToken) => {
       if (err) {
-        next({ status: 401, message: 'Token required' }) //<< this path means the token is bad for some reason
+        next({ status: 401, message: 'Token invalid' }) //<< this path means the token is bad for some reason
       } else {
-        req.decodedToken = decodedToken //<< tacking the decoded token onto the req object
+        req.decodedToken = decodedToken //<< tacking the decoded token onto the req object, this containts the decoded info about the user
         next()
       }
     }) //<< this verify function takes 3 arguments
@@ -48,7 +48,7 @@ const only = role_name => (req, res, next) => {
 
     Pull the decoded token from the req object, to avoid verifying it again!
   */
- next()
+    const { role_name } = req.decodedToken
 }
 
 
